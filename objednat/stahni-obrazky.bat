@@ -1,0 +1,47 @@
+@echo off
+echo Stahuji obrazky produktu z Shoptetu...
+mkdir images\products 2>nul
+
+curl -o "images/products/61_chatgpt-image-may-25--2026--08-48-23-pm.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/61_chatgpt-image-may-25--2026--08-48-23-pm.png"
+curl -o "images/products/64_chatgpt-image-may-25--2026--08-52-01-pm.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/64_chatgpt-image-may-25--2026--08-52-01-pm.png"
+curl -o "images/products/67_082c6bf4-3977-41ed-b4b2-c3ae3ed390c9.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/67_082c6bf4-3977-41ed-b4b2-c3ae3ed390c9.png"
+curl -o "images/products/70_74f861ff-62e8-4b08-8c32-0c943a930249.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/big/70_74f861ff-62e8-4b08-8c32-0c943a930249.png"
+curl -o "images/products/73_chatgpt-image-may-25--2026--08-53-02-pm.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/73_chatgpt-image-may-25--2026--08-53-02-pm.png"
+curl -o "images/products/76_68067820-2abf-48d3-aea7-f41c7be9c33f.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/76_68067820-2abf-48d3-aea7-f41c7be9c33f.png"
+curl -o "images/products/79_chatgpt-image-may-25--2026--08-26-28-pm.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/big/79_chatgpt-image-may-25--2026--08-26-28-pm.png"
+curl -o "images/products/82_chatgpt-image-may-25--2026--08-24-29-pm.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/big/82_chatgpt-image-may-25--2026--08-24-29-pm.png"
+curl -o "images/products/chatgpt_image_may_11__2026__05_11_31_pm.png" "https://shop.bistroududka.cz/user/categories/orig/chatgpt_image_may_11__2026__05_11_31_pm.png"
+curl -o "images/products/97_chatgpt-image-may-25--2026--08-36-15-pm.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/big/97_chatgpt-image-may-25--2026--08-36-15-pm.png"
+curl -o "images/products/103_chatgpt-image-may-25--2026--08-39-58-pm.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/103_chatgpt-image-may-25--2026--08-39-58-pm.png"
+curl -o "images/products/109_chatgpt-image-may-25--2026--08-42-25-pm.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/109_chatgpt-image-may-25--2026--08-42-25-pm.png"
+curl -o "images/products/199_b718b8bf-1c71-4b79-9dcb-a9bfb539fd40.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/199_b718b8bf-1c71-4b79-9dcb-a9bfb539fd40.png"
+curl -o "images/products/121_chatgpt-image-may-25--2026--08-56-23-pm.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/121_chatgpt-image-may-25--2026--08-56-23-pm.png"
+curl -o "images/products/208_002ce310-3d0c-4fe3-90c7-03fc0aff8326.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/208_002ce310-3d0c-4fe3-90c7-03fc0aff8326.png"
+curl -o "images/products/121_chatgpt-image-may-25--2026--08-55-01-pm.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/121_chatgpt-image-may-25--2026--08-55-01-pm.png"
+curl -o "images/products/124_bf440aad-72bb-4a60-b8c7-b790615d5f26.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/124_bf440aad-72bb-4a60-b8c7-b790615d5f26.png"
+curl -o "images/products/115_chatgpt-image-may-25--2026--08-58-47-pm.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/115_chatgpt-image-may-25--2026--08-58-47-pm.png"
+curl -o "images/products/118_73787512-cb73-40c3-be0a-9a404cf29b3c.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/118_73787512-cb73-40c3-be0a-9a404cf29b3c.png"
+curl -o "images/products/196_e20aa201-de18-4e2e-b6e0-af44136f3b60.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/196_e20aa201-de18-4e2e-b6e0-af44136f3b60.png"
+curl -o "images/products/127_132e2db5-25cf-4d7a-af1f-49c6359f702a.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/127_132e2db5-25cf-4d7a-af1f-49c6359f702a.png"
+curl -o "images/products/163_696fcd4b-e747-4c9e-be09-d033f65d86a2.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/163_696fcd4b-e747-4c9e-be09-d033f65d86a2.png"
+curl -o "images/products/142-1_87956c19-20a3-477b-993a-b68311dcf98f.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/big/142-1_87956c19-20a3-477b-993a-b68311dcf98f.png"
+curl -o "images/products/130_87956c19-20a3-477b-993a-b68311dcf98f.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/130_87956c19-20a3-477b-993a-b68311dcf98f.png"
+curl -o "images/products/133-1_a2773e43-ef55-48d3-931e-0bbd34739c6e.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/big/133-1_a2773e43-ef55-48d3-931e-0bbd34739c6e.png"
+curl -o "images/products/175_179c5f61-5a25-4321-a9af-c39f857d0a69.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/175_179c5f61-5a25-4321-a9af-c39f857d0a69.png"
+curl -o "images/products/166_1b4dc7a2-0905-4ed3-a1f7-a8c1dd902fac.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/big/166_1b4dc7a2-0905-4ed3-a1f7-a8c1dd902fac.png"
+curl -o "images/products/136_07165dec-7bf7-467a-92b1-1e4fc2a1f998.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/136_07165dec-7bf7-467a-92b1-1e4fc2a1f998.png"
+curl -o "images/products/145_b7827999-b4db-4368-a434-c604591bf4f9.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/145_b7827999-b4db-4368-a434-c604591bf4f9.png"
+curl -o "images/products/172_42a908ef-7b5e-43db-8b1d-70b66306eb66.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/172_42a908ef-7b5e-43db-8b1d-70b66306eb66.png"
+curl -o "images/products/139_1b4dc7a2-0905-4ed3-a1f7-a8c1dd902fac.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/139_1b4dc7a2-0905-4ed3-a1f7-a8c1dd902fac.png"
+curl -o "images/products/148_179c5f61-5a25-4321-a9af-c39f857d0a69.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/148_179c5f61-5a25-4321-a9af-c39f857d0a69.png"
+curl -o "images/products/160_67c6af70-6697-4ed0-8c71-9aa2c5ef8fa0.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/160_67c6af70-6697-4ed0-8c71-9aa2c5ef8fa0.png"
+curl -o "images/products/169_a444ba13-95db-4932-be57-d978477f5b71.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/169_a444ba13-95db-4932-be57-d978477f5b71.png"
+curl -o "images/products/157_1cc4096e-ad8a-49d9-b2c6-7ac3c28dfd6c.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/157_1cc4096e-ad8a-49d9-b2c6-7ac3c28dfd6c.png"
+curl -o "images/products/154_bb17b273-2df4-443f-80e3-ea2381057e3b.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/154_bb17b273-2df4-443f-80e3-ea2381057e3b.png"
+curl -o "images/products/151_f35fd5a0-8601-4850-a256-450c981d953b.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/detail/151_f35fd5a0-8601-4850-a256-450c981d953b.png"
+curl -o "images/products/211_96db81fd-b526-4edd-9fbf-638f0a76b04e.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/big/211_96db81fd-b526-4edd-9fbf-638f0a76b04e.png"
+curl -o "images/products/202_cc1aa316-1f93-4edb-8738-6d216e338ac4.png" "https://cdn.myshoptet.com/usr/shop.bistroududka.cz/user/shop/big/202_cc1aa316-1f93-4edb-8738-6d216e338ac4.png"
+
+echo.
+echo Hotovo! Stazeno %ERRORLEVEL% obrazku do images\products\
+pause

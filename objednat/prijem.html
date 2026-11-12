@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Příjem objednávek — Bistro u Dudka</title>
+<meta name="theme-color" content="#0a0807"/>
+<link rel="icon" type="image/png" href="../images/mascot-removebg-preview.webp"/>
+<link href="../fonts/fonts.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0}
+body{margin:0;background:#0a0807;font-family:'DM Sans',system-ui,sans-serif;color:#f7f0e3;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#14100d}
+::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+.header{padding:20px 24px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(247,240,227,.08)}
+.title{font-family:'Anton',sans-serif;font-size:24px;text-transform:uppercase;color:#f7f0e3}
+.subtitle{font-family:'Bricolage Grotesque',sans-serif;font-size:11px;color:#f0b840;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-top:2px}
+.status-bar{display:flex;align-items:center;gap:16px}
+.dot{width:10px;height:10px;border-radius:50%;animation:pulse 2s infinite}
+.dot.on{background:#3fcf6a}
+.dot.off{background:#e11d1d;animation:none}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.status-text{font-family:'Bricolage Grotesque',sans-serif;font-size:12px;font-weight:700;color:#a89c8a}
+.sound-btn{padding:8px 16px;border-radius:10px;border:1.5px solid rgba(247,240,227,.14);background:#14100d;color:#f7f0e3;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:12px;cursor:pointer;letter-spacing:.05em;text-transform:uppercase;transition:.2s}
+.sound-btn:hover{border-color:#e11d1d}
+.sound-btn.muted{opacity:.4}
+.stats{display:flex;gap:12px;padding:16px 24px;border-bottom:1px solid rgba(247,240,227,.08)}
+.stat{flex:1;background:#14100d;border:1px solid rgba(247,240,227,.08);border-radius:14px;padding:14px 16px;text-align:center}
+.stat-num{font-family:'Anton',sans-serif;font-size:28px;color:#f0b840}
+.stat-label{font-family:'Bricolage Grotesque',sans-serif;font-size:10px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:#a89c8a;margin-top:2px}
+.stat.nova .stat-num{color:#e11d1d}
+.stat.hotovo .stat-num{color:#3fcf6a}
+.orders{padding:16px 24px;display:flex;flex-direction:column;gap:12px}
+.empty{text-align:center;padding:80px 20px;color:#a89c8a;font-size:15px}
+.order{background:linear-gradient(180deg,#14100d,#1c1612);border:1.5px solid rgba(247,240,227,.08);border-radius:16px;padding:20px;transition:.3s}
+.order.nova{border-color:#e11d1d;box-shadow:0 0 24px -8px rgba(225,29,29,.3)}
+.order.pripravuje{border-color:#f0b840;box-shadow:0 0 24px -8px rgba(240,184,64,.2)}
+.order.hotovo{opacity:.5;border-color:rgba(247,240,227,.06)}
+.order-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.order-id{font-family:'Anton',sans-serif;font-size:20px;color:#f7f0e3;text-transform:uppercase}
+.order-time{font-family:'DM Sans',sans-serif;font-size:13px;color:#a89c8a}
+.order-badge{padding:6px 14px;border-radius:8px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;transition:.2s}
+.order-badge.nova{background:#e11d1d;color:#fff}
+.order-badge.pripravuje{background:#f0b840;color:#0a0807}
+.order-badge.hotovo{background:#3fcf6a;color:#0a0807}
+.order-badge:hover{transform:scale(1.05)}
+.order-info{display:flex;flex-wrap:wrap;gap:8px 20px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(247,240,227,.08)}
+.order-info-item{font-family:'Bricolage Grotesque',sans-serif;font-size:13px;font-weight:600}
+.order-info-item span{color:#a89c8a;margin-right:4px}
+.order-items{font-family:'DM Sans',sans-serif;font-size:14px;color:#f7f0e3;white-space:pre-line;line-height:1.6;margin-bottom:12px}
+.order-note{background:rgba(240,184,64,.08);border:1px solid rgba(240,184,64,.2);border-radius:10px;padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:13px;color:#f0b840;margin-bottom:12px}
+.order-total{font-family:'Anton',sans-serif;font-size:22px;color:#f0b840;text-align:right}
+.flash{animation:flashIn .6s ease}
+@keyframes flashIn{0%{transform:scale(.95);opacity:0}50%{transform:scale(1.01)}100%{transform:scale(1);opacity:1}}
+.sound-banner{position:fixed;top:0;left:0;right:0;background:linear-gradient(135deg,#e11d1d,#a30f0f);color:#fff;text-align:center;padding:16px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:14px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;z-index:999;box-shadow:0 4px 20px rgba(225,29,29,.5)}
+.sound-banner:hover{background:linear-gradient(135deg,#ff3333,#c01515)}
+ 
+/* Toggle switch */
+.toggle-bar{display:flex;align-items:center;justify-content:center;gap:16px;padding:16px 24px;border-bottom:1px solid rgba(247,240,227,.08);background:#14100d}
+.toggle-wrap{display:flex;align-items:center;gap:14px;padding:12px 24px;border-radius:14px;border:1.5px solid rgba(247,240,227,.08);cursor:pointer;transition:.3s;user-select:none}
+.toggle-wrap.on{border-color:#3fcf6a;background:rgba(63,207,106,.06)}
+.toggle-wrap.off{border-color:#e11d1d;background:rgba(225,29,29,.06)}
+.toggle-track{width:56px;height:30px;border-radius:15px;position:relative;transition:.3s}
+.toggle-track.on{background:#3fcf6a}
+.toggle-track.off{background:#e11d1d}
+.toggle-knob{width:24px;height:24px;border-radius:50%;background:#fff;position:absolute;top:3px;transition:.3s;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.toggle-knob.on{left:29px}
+.toggle-knob.off{left:3px}
+.toggle-label{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:14px;letter-spacing:.08em;text-transform:uppercase}
+.toggle-label.on{color:#3fcf6a}
+.toggle-label.off{color:#e11d1d}
+.toggle-sub{font-family:'DM Sans',sans-serif;font-size:11px;color:#a89c8a;margin-top:2px}
+ 
+@media(max-width:900px){
+  .header{flex-direction:column;gap:10px;text-align:center}
+  .status-bar{flex-wrap:wrap;justify-content:center}
+  .stats{gap:8px;padding:12px 16px}
+  .stat{padding:10px 8px}
+  .stat-num{font-size:22px}
+  .orders{padding:12px 16px}
+}
+@media(max-width:540px){
+  .header{padding:12px 14px;gap:8px;flex-direction:column;text-align:center}
+  .title{font-size:15px;letter-spacing:.02em}
+  .subtitle{font-size:8px;letter-spacing:.1em;margin-top:1px}
+  .status-bar{gap:6px;justify-content:center;flex-wrap:wrap}
+  .status-text{font-size:9px;order:3;width:100%;text-align:center;margin-top:2px}
+  .dot{width:8px;height:8px;display:none}
+  .sound-btn{padding:6px 10px;font-size:9px;letter-spacing:.03em}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px 12px}
+  .stat{padding:10px 6px;border-radius:10px}
+  .stat-num{font-size:22px}
+  .stat-label{font-size:7px;letter-spacing:.1em}
+  .orders{padding:10px 12px;gap:10px}
+  .order{padding:14px;border-radius:12px}
+  .order-id{font-size:15px}
+  .order-time{font-size:10px}
+  .order-badge{padding:8px 14px;font-size:11px;width:100%;text-align:center;border-radius:10px}
+  .order-head{flex-direction:column;gap:8px}
+  .order-info{flex-direction:column;gap:4px}
+  .order-info-item{font-size:12px}
+  .order-items{font-size:12px;line-height:1.5}
+  .order-note{font-size:11px;padding:8px 12px}
+  .order-total{font-size:18px}
+  .sound-banner{font-size:11px;padding:12px;letter-spacing:.04em}
+  .toggle-bar{padding:12px 14px}
+  .toggle-wrap{padding:10px 16px;gap:10px}
+  .toggle-label{font-size:12px}
+  .toggle-track{width:48px;height:26px}
+  .toggle-knob{width:20px;height:20px}
+  .toggle-knob.on{left:25px}
+}
+</style>
+</head>
+<body>
+<div id="soundBanner" class="sound-banner" onclick="activateSound()" style="display:none">
+  🔔 KLIKNĚTE SEM PRO AKTIVACI ZVUKOVÝCH UPOZORNĚNÍ
+</div>
+<div id="loginScreen" style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px">
+  <div style="width:100%;max-width:380px;text-align:center">
+    <div style="font-family:'Anton',sans-serif;font-size:28px;text-transform:uppercase;color:#f7f0e3;margin-bottom:4px">Bistro u Dudka</div>
+    <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:11px;color:#f0b840;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-bottom:32px">Příjem objednávek</div>
+    <div style="background:#14100d;border:1.5px solid rgba(247,240,227,.08);border-radius:20px;padding:32px 24px">
+      <div style="font-family:'Anton',sans-serif;font-size:20px;color:#f7f0e3;text-transform:uppercase;margin-bottom:20px;text-align:center">🔒 Přihlášení</div>
+      <input type="password" id="pwdInput" placeholder="Zadejte heslo" onkeydown="if(event.key==='Enter')doLogin()" style="width:100%;padding:14px 16px;border-radius:12px;border:1.5px solid rgba(247,240,227,.14);background:#1c1612;color:#f7f0e3;font-size:15px;outline:none;font-family:'Bricolage Grotesque',sans-serif;font-weight:600;box-sizing:border-box;margin-bottom:14px"/>
+      <div id="loginErr" style="color:#e11d1d;font-size:13px;margin-bottom:12px;font-family:'DM Sans',sans-serif;display:none">Špatné heslo</div>
+      <button onclick="doLogin()" style="width:100%;padding:16px 0;border-radius:14px;border:none;background:#e11d1d;color:#fff;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:14px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;box-shadow:0 16px 32px -10px rgba(225,29,29,.55)">Přihlásit se</button>
+    </div>
+  </div>
+</div>
+<div id="appMain" style="display:none">
+<div class="header">
+  <div>
+    <div class="title">Bistro u Dudka — Příjem</div>
+    <div class="subtitle" id="dateLabel"></div>
+  </div>
+  <div class="status-bar">
+    <div class="dot on" id="statusDot"></div>
+    <span class="status-text" id="statusText">Připojeno</span>
+    <button class="sound-btn" id="soundBtn" onclick="toggleSound()">🔔 Zvuk ZAP</button>
+    <button class="sound-btn" onclick="doLogout()" style="margin-left:4px">🚪 Odhlásit</button>
+  </div>
+</div>
+ 
+<!-- TOGGLE OBJEDNÁVEK -->
+<div class="toggle-bar">
+  <div class="toggle-wrap on" id="toggleWrap" onclick="toggleOrders()">
+    <div>
+      <div class="toggle-label on" id="toggleLabel">📦 Objednávky ZAPNUTY</div>
+      <div class="toggle-sub" id="toggleSub">Zákazníci mohou objednávat</div>
+    </div>
+    <div class="toggle-track on" id="toggleTrack">
+      <div class="toggle-knob on" id="toggleKnob"></div>
+    </div>
+  </div>
+</div>
+ 
+<div class="stats">
+  <div class="stat nova"><div class="stat-num" id="countNova">0</div><div class="stat-label">Nové</div></div>
+  <div class="stat"><div class="stat-num" id="countPripravuje">0</div><div class="stat-label">Připravuje se</div></div>
+  <div class="stat hotovo"><div class="stat-num" id="countHotovo">0</div><div class="stat-label">Hotovo</div></div>
+  <div class="stat"><div class="stat-num" id="countTotal">0 Kč</div><div class="stat-label">Tržba dnes</div></div>
+</div>
+<div class="orders" id="orderList">
+  <div class="empty">Čekám na objednávky…</div>
+</div>
+</div>
+ 
+<script>
+const API = "https://script.google.com/macros/s/AKfycbyPYl1BXe_2rVVTPjMyHN4MVwOO0_nzuSkjMLp4YFoR8fGcAcKAzaQZOTP4M_qxWsXl/exec";
+// Heslo se NIKDY nekontroluje tady v prohlížeči — jen ho pošleme na server
+// (Apps Script), který ho porovná s hodnotou uloženou ve Vlastnostech
+// skriptu. Teprve po úspěšném přihlášení server vrátí ADMIN_KEY, kterým se
+// autorizují další požadavky. Žádné tajemství tak není napsané v tomto
+// souboru, který si může kdokoliv zobrazit přes "zobrazit zdroj".
+
+const POLL_INTERVAL = 10000;
+let knownIds = new Set();
+let soundEnabled = true;
+let audioCtx = null;
+let audioReady = false;
+let firstLoad = true;
+let pollTimer = null;
+let ordersEnabled = true;
+let adminKey = sessionStorage.getItem("bistro_key") || "";
+
+function withKey(url) {
+  return url + "&key=" + encodeURIComponent(adminKey);
+}
+ 
+// ====== TOGGLE OBJEDNÁVEK ======
+function toggleOrders() {
+  var newState = !ordersEnabled;
+  var label = newState ? "Zapínám…" : "Vypínám…";
+  document.getElementById("toggleLabel").textContent = label;
+ 
+  fetch(withKey(API + "?action=toggleOrders&enabled=" + newState))
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d && d.error === "unauthorized") { doLogout(); return; }
+      ordersEnabled = d.enabled !== false;
+      updateToggleUI();
+    })
+    .catch(function() {
+      // Fallback — toggle anyway
+      ordersEnabled = newState;
+      updateToggleUI();
+    });
+}
+ 
+function checkOrderStatus() {
+  fetch(API + "?action=orderStatus")
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      ordersEnabled = d.enabled !== false;
+      updateToggleUI();
+    })
+    .catch(function() {});
+}
+ 
+function updateToggleUI() {
+  var wrap = document.getElementById("toggleWrap");
+  var label = document.getElementById("toggleLabel");
+  var sub = document.getElementById("toggleSub");
+  var track = document.getElementById("toggleTrack");
+  var knob = document.getElementById("toggleKnob");
+ 
+  if (ordersEnabled) {
+    wrap.className = "toggle-wrap on";
+    label.className = "toggle-label on";
+    label.textContent = "📦 Objednávky ZAPNUTY";
+    sub.textContent = "Zákazníci mohou objednávat";
+    track.className = "toggle-track on";
+    knob.className = "toggle-knob on";
+  } else {
+    wrap.className = "toggle-wrap off";
+    label.className = "toggle-label off";
+    label.textContent = "🚫 Objednávky VYPNUTY";
+    sub.textContent = "Zákazníci nemohou objednávat";
+    track.className = "toggle-track off";
+    knob.className = "toggle-knob off";
+  }
+}
+ 
+// ====== ZVUK ======
+function activateSound() {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    audioReady = true;
+    document.getElementById("soundBanner").style.display = "none";
+    playSound();
+  } catch(e) { console.log("Audio init error:", e); }
+}
+ 
+function showSoundBanner() {
+  if (!audioReady) {
+    document.getElementById("soundBanner").style.display = "block";
+  }
+}
+ 
+function doLogin() {
+  var pwd = document.getElementById("pwdInput").value;
+  document.getElementById("loginErr").style.display = "none";
+  fetch(API + "?action=login&pwd=" + encodeURIComponent(pwd))
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.ok && d.key) {
+        adminKey = d.key;
+        sessionStorage.setItem("bistro_key", adminKey);
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("appMain").style.display = "block";
+        activateSound();
+        startApp();
+      } else {
+        document.getElementById("loginErr").textContent = "Špatné heslo";
+        document.getElementById("loginErr").style.display = "block";
+        document.getElementById("pwdInput").value = "";
+        document.getElementById("pwdInput").focus();
+      }
+    })
+    .catch(function() {
+      document.getElementById("loginErr").textContent = "Nepodařilo se spojit se serverem.";
+      document.getElementById("loginErr").style.display = "block";
+    });
+}
+ 
+function doLogout() {
+  sessionStorage.removeItem("bistro_key");
+  adminKey = "";
+  if (pollTimer) clearInterval(pollTimer);
+  document.getElementById("appMain").style.display = "none";
+  document.getElementById("loginScreen").style.display = "flex";
+  document.getElementById("pwdInput").value = "";
+}
+ 
+if (adminKey) {
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("appMain").style.display = "block";
+  setTimeout(function(){ startApp(); showSoundBanner(); }, 100);
+}
+ 
+function playSound() {
+  if (!soundEnabled || !audioReady) return;
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    [0, 0.15, 0.3].forEach(function(delay) {
+      var osc = audioCtx.createOscillator();
+      var gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.type = "sine";
+      osc.frequency.value = delay === 0.15 ? 988 : 784;
+      gain.gain.setValueAtTime(0.3, audioCtx.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + 0.5);
+      osc.start(audioCtx.currentTime + delay);
+      osc.stop(audioCtx.currentTime + delay + 0.5);
+    });
+  } catch (e) { console.log("Sound error:", e); }
+}
+ 
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  var btn = document.getElementById("soundBtn");
+  btn.textContent = soundEnabled ? "🔔 Zvuk ZAP" : "🔇 Zvuk VYP";
+  btn.className = "sound-btn" + (soundEnabled ? "" : " muted");
+  if (soundEnabled) { activateSound(); }
+}
+ 
+function updateDate() {
+  var d = new Date();
+  document.getElementById("dateLabel").textContent =
+    d.toLocaleDateString("cs-CZ", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+}
+ 
+var STATUS_NEXT = { "Nová": "Připravuje se", "Připravuje se": "Hotovo" };
+var STATUS_CLASS = { "Nová": "nova", "Připravuje se": "pripravuje", "Hotovo": "hotovo" };
+ 
+function cycleStatus(id, current) {
+  var next = STATUS_NEXT[current];
+  if (!next || !API) return;
+  fetch(withKey(API + "?action=status&id=" + encodeURIComponent(id) + "&status=" + encodeURIComponent(next)))
+    .then(function(r) { return r.json(); })
+    .then(function(d) { if (d && d.error === "unauthorized") { doLogout(); return; } loadOrders(); })
+    .catch(function(err) { console.error("Status error:", err); });
+}
+ 
+function renderOrders(orders) {
+  var list = document.getElementById("orderList");
+  if (!orders.length) {
+    list.innerHTML = '<div class="empty">Zatím žádné objednávky dnes</div>';
+    return;
+  }
+ 
+  var newCount = 0;
+  orders.forEach(function(o) {
+    if (!knownIds.has(o.ID) && !firstLoad) newCount++;
+    knownIds.add(o.ID);
+  });
+ 
+  if (newCount > 0) {
+    playSound();
+    document.title = "🔴 " + newCount + " NOVÁ! — Příjem objednávek";
+    setTimeout(function() { document.title = "Příjem objednávek — Bistro u Dudka"; }, 5000);
+  }
+  firstLoad = false;
+ 
+  var nova = orders.filter(function(o) { return o["Stav"] === "Nová"; }).length;
+  var prip = orders.filter(function(o) { return o["Stav"] === "Připravuje se"; }).length;
+  var hotovo = orders.filter(function(o) { return o["Stav"] === "Hotovo"; }).length;
+  var trzba = orders.reduce(function(s, o) { return s + (parseInt(o["Celkem Kč"]) || 0); }, 0);
+ 
+  document.getElementById("countNova").textContent = nova;
+  document.getElementById("countPripravuje").textContent = prip;
+  document.getElementById("countHotovo").textContent = hotovo;
+  document.getElementById("countTotal").textContent = trzba.toLocaleString("cs-CZ") + " Kč";
+ 
+  var priority = { "Nová": 0, "Připravuje se": 1, "Hotovo": 2 };
+  orders.sort(function(a, b) {
+    var pa = priority[a["Stav"]] !== undefined ? priority[a["Stav"]] : 9;
+    var pb = priority[b["Stav"]] !== undefined ? priority[b["Stav"]] : 9;
+    if (pa !== pb) return pa - pb;
+    var ta = a["Čas"] || "";
+    var tb = b["Čas"] || "";
+    return tb.localeCompare(ta);
+  });
+ 
+  list.innerHTML = orders.map(function(o) {
+    var stav = o["Stav"] || "Nová";
+    var cls = STATUS_CLASS[stav] || "nova";
+    var zpusob = o["Způsob"] || "";
+    var isDovoz = zpusob === "Dovoz";
+ 
+    return '<div class="order ' + cls + (newCount > 0 && stav === "Nová" ? ' flash' : '') + '">' +
+      '<div class="order-head">' +
+        '<div>' +
+          '<div class="order-id">' + (o.ID || "—") + '</div>' +
+          '<div class="order-time">' + (o["Čas"] || "") + '</div>' +
+        '</div>' +
+        '<button class="order-badge ' + cls + '" onclick="cycleStatus(\'' + o.ID + '\',\'' + stav + '\')"' +
+          (stav === "Hotovo" ? " disabled" : "") + '>' +
+          (stav === "Nová" ? "▶ Připravit" : stav === "Připravuje se" ? "✓ Hotovo" : "✓ Dokončeno") +
+        '</button>' +
+      '</div>' +
+      '<div class="order-info">' +
+        '<div class="order-info-item"><span>👤</span>' + (o["Jméno"] || "") + '</div>' +
+        '<div class="order-info-item"><span>📞</span>' + (o["Telefon"] || "") + '</div>' +
+        '<div class="order-info-item"><span>' + (isDovoz ? "🚚" : "🏪") + '</span>' +
+          (isDovoz ? "Dovoz — " + (o["Ulice"] || "") + " (" + (o["PSČ"] || "") + ")" : "Osobní odběr") + '</div>' +
+      '</div>' +
+      '<div class="order-items">' + (o["Položky"] || "").replace(/\n/g, "<br>") + '</div>' +
+      (o["Poznámka"] ? '<div class="order-note">📝 ' + o["Poznámka"] + '</div>' : '') +
+      '<div style="display:flex;justify-content:space-between;align-items:baseline">' +
+        '<div style="font-size:12px;color:#a89c8a">' +
+          (isDovoz ? "Doprava: " + (o["Doprava Kč"] || 0) + " Kč · " : "") + "Obal: " + (o["Obal Kč"] || 0) + " Kč" +
+        '</div>' +
+        '<div class="order-total">' + (o["Celkem Kč"] || 0) + ' Kč</div>' +
+      '</div>' +
+    '</div>';
+  }).join("");
+}
+ 
+function loadOrders() {
+  if (!API) return;
+  fetch(withKey(API + "?action=orders"))
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data && data.error === "unauthorized") { doLogout(); return; }
+      document.getElementById("statusDot").className = "dot on";
+      document.getElementById("statusText").textContent = "Připojeno · aktualizace " +
+        new Date().toLocaleTimeString("cs-CZ", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+      renderOrders(data.orders || []);
+    })
+    .catch(function(err) {
+      console.error("Load error:", err);
+      document.getElementById("statusDot").className = "dot off";
+      document.getElementById("statusText").textContent = "Chyba připojení";
+    });
+}
+ 
+function startApp() {
+  updateDate();
+  checkOrderStatus(); // načíst aktuální stav přepínače
+  loadOrders();
+  pollTimer = setInterval(loadOrders, POLL_INTERVAL);
+}
+ 
+document.addEventListener("click", function() {
+  if (!audioReady) activateSound();
+}, { once: true });
+</script>
+</body>
+</html>
