@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Příjem objednávek — Bistro u Dudka</title>
 <meta name="theme-color" content="#0a0807"/>
+<meta name="robots" content="noindex,nofollow"/>
 <link rel="icon" type="image/png" href="../images/mascot-removebg-preview.webp"/>
 <link href="../fonts/fonts.css" rel="stylesheet">
 <style>
@@ -263,7 +264,7 @@ function showSoundBanner() {
 function doLogin() {
   var pwd = document.getElementById("pwdInput").value;
   document.getElementById("loginErr").style.display = "none";
-  fetch(API + "?action=login&pwd=" + encodeURIComponent(pwd))
+  fetch(API, { method: "POST", body: JSON.stringify({ action: "login", pwd: pwd }), headers: { "Content-Type": "text/plain;charset=utf-8" } })
     .then(function(r) { return r.json(); })
     .then(function(d) {
       if (d.ok && d.key) {
@@ -347,6 +348,12 @@ function cycleStatus(id, current) {
     .catch(function(err) { console.error("Status error:", err); });
 }
  
+function esc(v) {
+  return String(v == null ? "" : v).replace(/[&<>"']/g, function(c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+  });
+}
+
 function renderOrders(orders) {
   var list = document.getElementById("orderList");
   if (!orders.length) {
@@ -396,27 +403,27 @@ function renderOrders(orders) {
     return '<div class="order ' + cls + (newCount > 0 && stav === "Nová" ? ' flash' : '') + '">' +
       '<div class="order-head">' +
         '<div>' +
-          '<div class="order-id">' + (o.ID || "—") + '</div>' +
-          '<div class="order-time">' + (o["Čas"] || "") + '</div>' +
+          '<div class="order-id">' + esc(o.ID || "—") + '</div>' +
+          '<div class="order-time">' + esc(o["Čas"] || "") + '</div>' +
         '</div>' +
-        '<button class="order-badge ' + cls + '" onclick="cycleStatus(\'' + o.ID + '\',\'' + stav + '\')"' +
+        '<button class="order-badge ' + cls + '" data-id="' + esc(o.ID) + '" data-stav="' + esc(stav) + '"' +
           (stav === "Hotovo" ? " disabled" : "") + '>' +
           (stav === "Nová" ? "▶ Připravit" : stav === "Připravuje se" ? "✓ Hotovo" : "✓ Dokončeno") +
         '</button>' +
       '</div>' +
       '<div class="order-info">' +
-        '<div class="order-info-item"><span>👤</span>' + (o["Jméno"] || "") + '</div>' +
-        '<div class="order-info-item"><span>📞</span>' + (o["Telefon"] || "") + '</div>' +
+        '<div class="order-info-item"><span>👤</span>' + esc(o["Jméno"] || "") + '</div>' +
+        '<div class="order-info-item"><span>📞</span>' + esc(o["Telefon"] || "") + '</div>' +
         '<div class="order-info-item"><span>' + (isDovoz ? "🚚" : "🏪") + '</span>' +
-          (isDovoz ? "Dovoz — " + (o["Ulice"] || "") + " (" + (o["PSČ"] || "") + ")" : "Osobní odběr") + '</div>' +
+          (isDovoz ? "Dovoz — " + esc(o["Ulice"] || "") + " (" + esc(o["PSČ"] || "") + ")" : "Osobní odběr") + '</div>' +
       '</div>' +
-      '<div class="order-items">' + (o["Položky"] || "").replace(/\n/g, "<br>") + '</div>' +
-      (o["Poznámka"] ? '<div class="order-note">📝 ' + o["Poznámka"] + '</div>' : '') +
+      '<div class="order-items">' + esc(o["Položky"] || "").replace(/\n/g, "<br>") + '</div>' +
+      (o["Poznámka"] ? '<div class="order-note">📝 ' + esc(o["Poznámka"]) + '</div>' : '') +
       '<div style="display:flex;justify-content:space-between;align-items:baseline">' +
         '<div style="font-size:12px;color:#a89c8a">' +
-          (isDovoz ? "Doprava: " + (o["Doprava Kč"] || 0) + " Kč · " : "") + "Obal: " + (o["Obal Kč"] || 0) + " Kč" +
+          (isDovoz ? "Doprava: " + esc(o["Doprava Kč"] || 0) + " Kč · " : "") + "Obal: " + esc(o["Obal Kč"] || 0) + " Kč" +
         '</div>' +
-        '<div class="order-total">' + (o["Celkem Kč"] || 0) + ' Kč</div>' +
+        '<div class="order-total">' + esc(o["Celkem Kč"] || 0) + ' Kč</div>' +
       '</div>' +
     '</div>';
   }).join("");
@@ -447,6 +454,12 @@ function startApp() {
   pollTimer = setInterval(loadOrders, POLL_INTERVAL);
 }
  
+document.getElementById("orderList").addEventListener("click", function(ev) {
+  var btn = ev.target.closest ? ev.target.closest(".order-badge") : null;
+  if (!btn || btn.disabled) return;
+  cycleStatus(btn.getAttribute("data-id"), btn.getAttribute("data-stav"));
+});
+
 document.addEventListener("click", function() {
   if (!audioReady) activateSound();
 }, { once: true });

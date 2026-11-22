@@ -4,7 +4,7 @@
 //
 // Nastav ve ⚙️ Project Settings → Script Properties:
 //   ADMIN_PASSWORD = heslo, kterým se přihlašuješ do příjmu objednávek
-//   ADMIN_KEY      = U2pevyjBPETPQ97YYz5jN4OFYrWpZcnA  (nebo vlastní náhodný řetězec)
+//   ADMIN_KEY      = dlouhý náhodný řetězec (min. 32 znaků) — NIKDY ho nepiš do kódu ani do gitu
 //
 // Proč: heslo se ověřuje jen tady na serveru (sem nikdo zvenčí nevidí).
 // ADMIN_KEY se klientovi vrátí AŽ po správném přihlášení a bez něj server
@@ -20,6 +20,16 @@ function out(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
 }
+
+// Text pro zápis do tabulky: ořízne délku a zneškodní vzorce (=, +, -, @),
+// aby zákazník nemohl do Sheets propašovat =IMPORTXML(...) apod.
+function safe(v, max) {
+  var s = String(v == null ? "" : v).substring(0, max || 300);
+  if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+  return s;
+}
+
+var VALID_STATUS = ["Nová", "Připravuje se", "Hotovo"];
 
 function checkKey(e) {
   var key = (e.parameter && e.parameter.key) || "";
@@ -56,6 +66,20 @@ function doPost(e) {
 
     var data = JSON.parse(e.postData.contents);
 
+    // --- přihlášení do příjmu objednávek (heslo jde v těle POST, ne v URL) ---
+    if (data && data.action === "login") {
+      var lc = CacheService.getScriptCache();
+      var fails = Number(lc.get("login_fails") || 0);
+      if (fails >= 8) return out({ ok: false, error: "Příliš mnoho pokusů, zkuste to za 10 minut." });
+      var expectedPwd = props().getProperty("ADMIN_PASSWORD") || "";
+      if (expectedPwd && String(data.pwd || "") === expectedPwd) {
+        lc.remove("login_fails");
+        return out({ ok: true, key: props().getProperty("ADMIN_KEY") });
+      }
+      lc.put("login_fails", String(fails + 1), 600);
+      return out({ ok: false, error: "Špatné heslo" });
+    }
+
     // --- základní validace vstupu, aby se nedaly poslat nesmyslné/škodlivé objednávky ---
     var name = String(data.name || "").trim();
     var phone = String(data.phone || "").trim();
@@ -65,6 +89,8 @@ function doPost(e) {
     if (!name || name.length > 120) return out({ ok: false, error: "Neplatné jméno." });
     if (phone.replace(/\D/g, "").length < 9) return out({ ok: false, error: "Neplatný telefon." });
     if (!items.length) return out({ ok: false, error: "Košík je prázdný." });
+    if (items.length > 50) return out({ ok: false, error: "Příliš mnoho položek." });
+    if (phone.length > 25) return out({ ok: false, error: "Neplatný telefon." });
     if (!isFinite(total) || total <= 0 || total > 20000) {
       return out({ ok: false, error: "Neplatná celková částka." });
     }
@@ -80,6 +106,12 @@ function doPost(e) {
     if (cache.get(dupKey)) {
       return out({ ok: false, error: "Tuto objednávku jsme už přijali, díky." });
     }
+    var rateKey = "rate_" + phone.replace(/\D/g, "");
+    var recent = Number(cache.get(rateKey) || 0);
+    if (recent >= 3) {
+      return out({ ok: false, error: "Příliš mnoho objednávek z tohoto čísla, zavolejte nám prosím." });
+    }
+    cache.put(rateKey, String(recent + 1), 600);
     cache.put(dupKey, "1", 60);
 
     var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -101,32 +133,23 @@ function doPost(e) {
 
     sheet.appendRow([
       id, cas, "Nová", zpusob,
-      name, phone,
-      String(data.street || ""), String(data.psc || ""),
-      String(data.itemsText || ""), String(data.note || ""),
+      safe(name, 120), safe(phone, 25),
+      safe(data.street, 160), safe(data.psc, 60),
+      safe(data.itemsText, 2000), safe(data.note, 500),
       Number(data.deliveryFee) || 0, Number(data.obalFee) || 0, total
     ]);
 
     return out({ ok: true, id: id });
 
   } catch (err) {
-    return out({ ok: false, error: err.toString() });
+    Logger.log("doPost error: " + err);
+    return out({ ok: false, error: "Objednávku se nepodařilo zpracovat." });
   }
 }
 
 // ====== ČTENÍ + SPRÁVA (GET) ======
 function doGet(e) {
   var action = (e && e.parameter && e.parameter.action) ? e.parameter.action.toString() : "";
-
-  // --- přihlášení: heslo se ověří JEN TADY, nikdy v HTML na webu ---
-  if (action === "login") {
-    var pwd = e.parameter.pwd || "";
-    var expected = props().getProperty("ADMIN_PASSWORD") || "";
-    if (expected && pwd === expected) {
-      return out({ ok: true, key: props().getProperty("ADMIN_KEY") });
-    }
-    return out({ ok: false, error: "Špatné heslo" });
-  }
 
   // --- veřejné, bez osobních údajů: jen true/false pro banner na webu ---
   if (action === "orderStatus") {
@@ -186,7 +209,7 @@ function doGet(e) {
     var newStatus = e.parameter.status || "";
     var ss2 = SpreadsheetApp.getActiveSpreadsheet();
     var sheet2 = ss2.getSheetByName(SHEET_NAME);
-    if (sheet2 && id && newStatus) {
+    if (sheet2 && id && VALID_STATUS.indexOf(newStatus) !== -1) {
       var data2 = sheet2.getDataRange().getValues();
       for (var k = 1; k < data2.length; k++) {
         if (data2[k][0] === id) {

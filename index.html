@@ -9,12 +9,30 @@
 <meta property="og:description" content="Poctivý kebab z Jaroměře. Pomalu pečené maso, vlastní omáčky, rozvoz do 30 min." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://bistroududka.cz" />
-<meta property="og:image" content="images/mascot-removebg-preview.webp" />
+<meta property="og:image" content="https://bistroududka.cz/images/og-image.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Bistro u Dudka — maskot s kebabem a hranolky" />
+<meta property="og:locale" content="cs_CZ" />
+<meta property="og:site_name" content="Bistro u Dudka" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Bistro u Dudka — Jediný kebab svého druhu v oblasti" />
+<meta name="twitter:description" content="Poctivý kebab z Jaroměře. Pomalu pečené maso, vlastní omáčky, rozvoz po Jaroměři a okolí." />
+<meta name="twitter:image" content="https://bistroududka.cz/images/og-image.jpg" />
+<link rel="canonical" href="https://bistroududka.cz/" />
 <meta name="theme-color" content="#0a0807" />
  
-<link rel="icon" type="image/webp" href="images/mascot-removebg-preview.webp" />
-<link rel="icon" type="image/png" href="images/mascot-removebg-preview.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png" />
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+<link rel="preload" as="image" href="images/mascot-removebg-preview.webp" type="image/webp" fetchpriority="high" />
+<link rel="preload" as="font" type="font/woff2" href="fonts/anton-400-normal-lat.woff2" crossorigin />
+<link rel="preload" as="font" type="font/woff2" href="fonts/dm-sans-400-normal-lat.woff2" crossorigin />
 <link href="fonts/fonts.css" rel="stylesheet">
+<noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Restaurant","name":"Bistro u Dudka","url":"https://bistroududka.cz/","image":"https://bistroududka.cz/images/og-image.jpg","servesCuisine":"Kebab","email":"Bistro_u_Dudka@o2.pl","address":{"@type":"PostalAddress","streetAddress":"Náchodská 571","postalCode":"551 01","addressLocality":"Jaroměř","addressCountry":"CZ"},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Tuesday","Wednesday","Thursday","Friday","Saturday"],"opens":"10:30","closes":"20:00"}],"sameAs":["https://www.facebook.com/p/Bistro-u-Dudka-61564773971073/","https://www.instagram.com/bistroududka"]}
+</script>
  
 <style>
   :root {
@@ -659,7 +677,7 @@
   }
   @media (max-width: 880px) { .gallery { grid-template-columns: repeat(2, 1fr); } }
  
-  .gallery a {
+  .gallery > div {
     aspect-ratio: 1;
     border-radius: 6px;
     overflow: hidden;
@@ -668,13 +686,13 @@
     border: 1px solid var(--line);
   }
   .gallery img { width:100%; height:100%; object-fit: cover; transition: transform .6s cubic-bezier(.2,.7,.2,1); }
-  .gallery a:hover img { transform: scale(1.1); }
-  .gallery a::after {
+  .gallery > div:hover img { transform: scale(1.1); }
+  .gallery > div::after {
     content:''; position: absolute; inset: 0;
     background: linear-gradient(to top, rgba(225,29,29,.4), transparent 60%);
     opacity: 0; transition: opacity .3s ease;
   }
-  .gallery a:hover::after { opacity: 1; }
+  .gallery > div:hover::after { opacity: 1; }
  
   /* ============== REVIEWS ============== */
   .reviews {
@@ -967,6 +985,17 @@
     text-align: center;
     color: var(--ink);
   }
+
+  /* ============== POLISH ============== */
+  html { scroll-padding-top: 5.5rem; -webkit-text-size-adjust: 100%; }
+  ::selection { background: var(--red); color: #fff; }
+  h1, h2, h3 { text-wrap: balance; }
+  p { text-wrap: pretty; }
+  a:focus-visible, button:focus-visible, .btn:focus-visible, .menu-card:focus-visible {
+    outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 6px;
+  }
+  .btn:active { transform: translateY(0) scale(.98); }
+  .menu-card, .btn { -webkit-tap-highlight-color: transparent; }
 </style>
 </head>
 <body>
@@ -975,7 +1004,7 @@
 <header class="nav">
   <div class="container nav-inner">
     <a href="#" class="brand" aria-label="Bistro u Dudka">
-      <img src="images/mascot-removebg-preview.webp" alt="Bistro u Dudka" />
+      <img src="images/mascot-removebg-preview.webp" alt="Bistro u Dudka" width="408" height="612" />
     </a>
     <nav class="nav-links">
       <a href="#nabidka">Nabídka</a>
@@ -1028,7 +1057,7 @@
     <div class="hero-mascot reveal">
       <div class="hero-mascot-bg"></div>
       <div class="hero-mascot-stamp"><small>ROZVOZ DO</small>30<br>MINUT</div>
-      <img src="images/mascot-removebg-preview.webp" alt="Dudkův kebab maskot" />
+      <img src="images/mascot-removebg-preview.webp" alt="Dudkův kebab maskot" width="408" height="612" fetchpriority="high" decoding="async" />
     </div>
   </div>
 </section>
@@ -1052,7 +1081,7 @@
  
     <div class="menu-grid">
       <a href="objednat/objednavka.html" class="menu-card reveal">
-        <div class="menu-card-img" style="background-image:url('images/menu-kebab-talir.webp');">
+        <div class="menu-card-img" data-bg="images/menu-kebab-talir.webp">
           <span class="menu-card-tag menu-card-tag--gold">TOP</span>
         </div>
         <div class="menu-card-body">
@@ -1066,7 +1095,7 @@
       </a>
  
       <a href="objednat/objednavka.html" class="menu-card reveal">
-        <div class="menu-card-img" style="background-image:url('images/menu-bageta-xxl.webp');">
+        <div class="menu-card-img" data-bg="images/menu-bageta-xxl.webp">
           <span class="menu-card-tag">XXL</span>
         </div>
         <div class="menu-card-body">
@@ -1080,7 +1109,7 @@
       </a>
  
       <a href="objednat/objednavka.html" class="menu-card reveal">
-        <div class="menu-card-img" style="background-image:url('images/menu-durum-nachos.webp');">
+        <div class="menu-card-img" data-bg="images/menu-durum-nachos.webp">
           <span class="menu-card-tag">NOVINKA</span>
         </div>
         <div class="menu-card-body">
@@ -1094,7 +1123,7 @@
       </a>
  
       <a href="objednat/objednavka.html" class="menu-card reveal">
-        <div class="menu-card-img" style="background-image:url('images/menu-durum-americky.webp');">
+        <div class="menu-card-img" data-bg="images/menu-durum-americky.webp">
         </div>
         <div class="menu-card-body">
           <h3>Dürüm — Americký Plus</h3>
@@ -1107,7 +1136,7 @@
       </a>
  
       <a href="objednat/objednavka.html" class="menu-card reveal">
-        <div class="menu-card-img" style="background-image:url('images/menu-falafel-salat.webp');">
+        <div class="menu-card-img" data-bg="images/menu-falafel-salat.webp">
           <span class="menu-card-tag" style="background:#4a8013;">VEGE</span>
         </div>
         <div class="menu-card-body">
@@ -1121,7 +1150,7 @@
       </a>
  
       <a href="objednat/objednavka.html" class="menu-card reveal">
-        <div class="menu-card-img" style="background-image:url('images/menu-kebab-salat.webp');">
+        <div class="menu-card-img" data-bg="images/menu-kebab-salat.webp">
         </div>
         <div class="menu-card-body">
           <h3>Kebabový salát</h3>
@@ -1224,10 +1253,10 @@
       <p>Fotky od našich zákazníků. Označ nás na Instagramu @bistroududka a přidáme tě sem.</p>
     </div>
     <div class="gallery">
-      <a href="#" class="reveal"><img src="images/gallery-1.webp" alt="Kebab" loading="lazy" /></a>
-      <a href="#" class="reveal"><img src="images/gallery-2.webp" alt="Kebab" loading="lazy" /></a>
-      <a href="#" class="reveal"><img src="images/gallery-3.webp" alt="Kebab" loading="lazy" /></a>
-      <a href="#" class="reveal"><img src="images/gallery-4.webp" alt="Kebab" loading="lazy" /></a>
+      <div class="reveal"><img src="images/gallery-1.webp" alt="Ukázka jídla z Bistra u Dudka" width="466" height="531" loading="lazy" decoding="async" /></div>
+      <div class="reveal"><img src="images/gallery-2.webp" alt="Ukázka jídla z Bistra u Dudka" width="463" height="571" loading="lazy" decoding="async" /></div>
+      <div class="reveal"><img src="images/gallery-3.webp" alt="Ukázka jídla z Bistra u Dudka" width="463" height="562" loading="lazy" decoding="async" /></div>
+      <div class="reveal"><img src="images/gallery-4.webp" alt="Ukázka jídla z Bistra u Dudka" width="597" height="561" loading="lazy" decoding="async" /></div>
     </div>
   </div>
 </section>
@@ -1304,7 +1333,7 @@
   <div class="container">
     <div class="footer-top">
       <div class="footer-brand">
-        <img src="images/mascot-removebg-preview.webp" alt="Bistro u Dudka" />
+        <img src="images/mascot-removebg-preview.webp" alt="Bistro u Dudka" width="408" height="612" loading="lazy" decoding="async" />
         <p>Jediný kebab svého druhu v oblasti. Poctivé maso, výrazná chuť a street food, co má styl.</p>
       </div>
       <div class="footer-col">
@@ -1352,6 +1381,16 @@
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
   }, { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  const bgIo = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.backgroundImage = "url('" + e.target.dataset.bg + "')";
+        bgIo.unobserve(e.target);
+      }
+    });
+  }, { rootMargin: '400px 0px' });
+  document.querySelectorAll('[data-bg]').forEach(el => bgIo.observe(el));
 
   const navEl = document.querySelector('.nav');
   let lastY = window.scrollY, ticking = false;

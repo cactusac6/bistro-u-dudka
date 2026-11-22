@@ -20,15 +20,9 @@ Jedna stránka v HTML/CSS/JS, žádný framework, žádný build. Funguje sama o
 
 Všechna tlačítka "Objednat" odkazují na **shop.bistroududka.cz** — Shoptet shop pořád dělá to, co umí (košík, platby, sklad).
 
-## Nasazení na Netlify (zdarma, 2 minuty)
+## Nasazení
 
-1. Jdi na https://app.netlify.com/drop
-2. Přetáhni složku `bistro-u-dudka` do okna (nebo jen `index.html`)
-3. Hotovo — dostaneš URL typu `random-name.netlify.app`
-4. V Netlify nastavení → Domain management → Add custom domain → `bistroududka.cz`
-5. Změníš DNS u registrátora domény (Netlify ti řekne přesně jak)
-
-Stejný postup funguje pro **Vercel** (vercel.com) — taky drag&drop.
+Web je statický a běží na vlastním serveru (Coolify, Hetzner). Aplikace se nasazuje z tohoto repozitáře jako statický web (Static) a domény `bistroududka.cz` a `www.bistroududka.cz` mají v DNS A záznam na IP serveru.
 
 ## Co ještě vyladit (TODO)
 
@@ -54,3 +48,18 @@ Pokud to chceš profesionálně škálovat:
 - Vlastní doménový mail (`info@bistroududka.cz`)
 
 Napiš, kdyby cokoliv nešlo nebo bys chtěl něco doladit.
+
+## Objednávkový systém — úprava menu (od 11/2026)
+
+Objednávka už nenačítá React + Babel z unpkg a nekompiluje JSX v prohlížeči.
+Zdroják je v `objednat/src/app.jsx`, na webu běží zkompilovaný `objednat/app.js`
+a React je lokálně v `objednat/vendor/`.
+
+Po úpravě `objednat/src/app.jsx` (ceny, produkty…) přegeneruj `app.js`:
+
+```
+npx esbuild objednat/src/app.jsx --minify --jsx=transform --target=es2019 --outfile=objednat/app.js
+```
+
+Nasazení: Vercel (`vercel.json` = bezpečnostní hlavičky, cache, `/objednat` → objednávka;
+`.vercelignore` = nenahrávají se PNG/JPG originály, Apps Script ani zdrojáky).
