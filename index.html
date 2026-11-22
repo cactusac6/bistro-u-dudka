@@ -996,6 +996,94 @@
   }
   .btn:active { transform: translateY(0) scale(.98); }
   .menu-card, .btn { -webkit-tap-highlight-color: transparent; }
+
+  /* ============== DESIGN UPGRADE ============== */
+  :root { --ease-out: cubic-bezier(.16,1,.3,1); }
+  body::after {
+    content: ''; position: fixed; inset: 0; z-index: 9999; pointer-events: none; opacity: .06; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .scroll-progress { position: absolute; left: 0; bottom: -1px; height: 2px; width: 100%; background: linear-gradient(90deg, var(--red), var(--gold)); transform-origin: 0 50%; transform: scaleX(0); pointer-events: none; }
+
+  /* hero — proporce a typografie */
+  @media (min-width: 921px) {
+    .hero { min-height: min(calc(100svh - 90px), 860px); display: flex; align-items: center; }
+    .hero > .container { width: min(1240px, 100% - 5rem); }
+    .hero-grid { grid-template-columns: 1.15fr .85fr; }
+    .hero-mascot { max-width: 520px; }
+  }
+  .hero-title { position: relative; margin: 1.6rem 0 2.1rem !important; }
+  .hero-title .ln { display: block; overflow: hidden; padding-bottom: .04em; margin-bottom: -.04em; }
+  .hero-title .ln > span { display: block; transform: translateY(105%); transition: transform 1.1s var(--ease-out); }
+  .hero-title .ln + .ln > span { transition-delay: .09s; }
+  .hero-title .accent {
+    display: block; width: max-content; margin: -.08em 0 0 auto; margin-right: 6%;
+    font-size: .62em !important; line-height: 1;
+    opacity: 0; transform: translateY(.3em) rotate(-4deg) !important;
+    transition: opacity .9s .35s ease, transform 1.1s .35s var(--ease-out);
+  }
+  .is-loaded .hero-title .ln > span { transform: none; }
+  .is-loaded .hero-title .accent { opacity: 1; transform: rotate(-4deg) !important; }
+  .hero-lead { max-width: 40ch !important; }
+  .hero-stats { margin-top: 2.75rem !important; max-width: 560px; }
+  .hero-stat strong { font-variant-numeric: tabular-nums; }
+
+  /* maskot + badge + jiskry */
+  .hero-mascot { perspective: 900px; }
+  .hero-mascot-img { transform: translate3d(var(--mx,0),var(--my,0),0) rotate(var(--mr,0deg)); transition: transform .5s var(--ease-out); animation: float 6s ease-in-out infinite; will-change: transform; }
+  @keyframes float { 0%,100% { translate: 0 0; } 50% { translate: 0 -12px; } }
+  .hero-embers { position: absolute; inset: -6% -10% 0; width: 120%; height: 106%; z-index: 1; pointer-events: none; }
+  .hero-badge { position: absolute; top: 4%; right: -2%; z-index: 3; width: 132px; height: 132px; display: grid; place-items: center; }
+  .hero-badge svg { position: absolute; inset: 0; width: 100%; height: 100%; animation: spin 18s linear infinite; }
+  .hero-badge text { font-family: var(--grotesque); font-weight: 800; font-size: 10.2px; letter-spacing: .14em; fill: var(--gold); }
+  .hero-badge-core { width: 64%; height: 64%; border-radius: 50%; background: var(--gold); color: #0a0807; display: grid; place-content: center; text-align: center; font-family: var(--grotesque); font-weight: 800; font-size: .62rem; letter-spacing: .18em; line-height: 1; box-shadow: 0 12px 30px -8px rgba(240,184,64,.55); transform: rotate(-8deg); }
+  .hero-badge-core b { font-family: var(--display); font-weight: 400; font-size: 2.1rem; letter-spacing: 0; margin-bottom: .1rem; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 480px) { .hero-badge { width: 100px; height: 100px; right: 0; } .hero-badge-core b { font-size: 1.6rem; } .hero-badge text { font-size: 10px; } }
+
+  /* pásky */
+  .ribbons { position: relative; z-index: 3; height: clamp(150px, 15vw, 210px); margin-block: -1.5rem; overflow: hidden; display: grid; align-items: center; pointer-events: none; }
+  .ribbons .ticker { position: absolute; left: -5%; right: -5%; border: 0; padding: 1.05rem 0; }
+  .ticker--front { transform: rotate(-2.2deg); box-shadow: 0 18px 40px -18px rgba(0,0,0,.8); }
+  .ticker--back { transform: rotate(2.4deg); background: var(--gold) !important; color: #0a0807 !important; opacity: .95; }
+  .ticker--back .dot { color: var(--red) !important; }
+  .ticker-track { animation: none !important; will-change: transform; }
+
+  /* menu karty — 3D tilt + světlo */
+  .menu-card { transform-style: preserve-3d; transition: transform .45s var(--ease-out), border-color .3s ease, box-shadow .45s ease; }
+  .menu-card::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .35s ease;
+    background: radial-gradient(420px circle at var(--gx,50%) var(--gy,50%), rgba(255,240,215,.13), transparent 45%); z-index: 3; }
+  @media (hover: hover) and (pointer: fine) {
+    .menu-card:hover { transform: perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(-6px); box-shadow: 0 30px 60px -25px rgba(225,29,29,.45); }
+    .menu-card:hover::after { opacity: 1; }
+    .menu-card:hover .menu-card-img { transform: scale(1.05); }
+  }
+  .menu-card-img { transition: transform .8s var(--ease-out); }
+  .menu-card { position: relative; }
+
+  /* proč my — obrysová čísla */
+  .why-num { color: transparent !important; -webkit-text-stroke: 1.5px var(--red); font-size: clamp(4rem, 7vw, 6rem) !important; transition: color .4s ease, transform .5s var(--ease-out); display: inline-block; }
+  .why-item:hover .why-num { color: var(--red) !important; transform: translateX(6px); }
+
+  /* galerie — rytmus místo mřížky */
+  @media (min-width: 881px) {
+    .gallery { align-items: start; }
+    .gallery > div:nth-child(1) { aspect-ratio: 4/5; }
+    .gallery > div:nth-child(2) { aspect-ratio: 1; margin-top: 3.5rem; }
+    .gallery > div:nth-child(3) { aspect-ratio: 4/5; margin-top: 1.25rem; }
+    .gallery > div:nth-child(4) { aspect-ratio: 1; margin-top: 4.75rem; }
+  }
+
+  /* reveal — jemnější a se zpožděním */
+  .reveal { transform: translateY(28px); transition: opacity .9s ease, transform 1.1s var(--ease-out); transition-delay: var(--d, 0s); }
+  .btn { transition: background .25s ease, box-shadow .3s ease, translate .35s var(--ease-out), transform .25s ease; translate: var(--bx,0) var(--by,0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-title .ln > span, .hero-title .accent { transform: none !important; opacity: 1 !important; transition: none !important; }
+    .hero-mascot-img, .hero-badge svg { animation: none !important; }
+    .hero-embers { display: none; }
+    .menu-card:hover { transform: translateY(-4px) !important; }
+  }
 </style>
 </head>
 <body>
@@ -1031,9 +1119,9 @@
   <div class="container hero-grid">
     <div class="reveal">
       <span class="hero-eyebrow"><span class="dot"></span> Jaroměř · Otevřeno Út–So 10:30–20:00</span>
-      <h1>
-        Jediný kebab<br>
-        <span class="line2">svého druhu</span><br>
+      <h1 class="hero-title">
+        <span class="ln"><span>Jediný kebab</span></span>
+        <span class="ln line2"><span>svého druhu</span></span>
         <span class="accent">v oblasti.</span>
       </h1>
       <p class="hero-lead">
@@ -1048,26 +1136,35 @@
       </div>
  
       <div class="hero-stats">
-        <div class="hero-stat"><strong>30 MIN</strong><span>průměrný rozvoz</span></div>
+        <div class="hero-stat"><strong><span data-count="30">30</span> MIN</strong><span>průměrný rozvoz</span></div>
         <div class="hero-stat"><strong>0 KČ</strong><span>doprava nad 400 Kč</span></div>
-        <div class="hero-stat"><strong>★ 4,8</strong><span>hodnocení Google</span></div>
+        <div class="hero-stat"><strong>★ <span data-count="4.8" data-dec="1">4,8</span></strong><span>hodnocení Google</span></div>
       </div>
     </div>
  
     <div class="hero-mascot reveal">
       <div class="hero-mascot-bg"></div>
-      <div class="hero-mascot-stamp"><small>ROZVOZ DO</small>30<br>MINUT</div>
-      <img src="images/mascot-removebg-preview.webp" alt="Dudkův kebab maskot" width="408" height="612" fetchpriority="high" decoding="async" />
+      <canvas class="hero-embers" aria-hidden="true"></canvas>
+      <div class="hero-badge" aria-hidden="true">
+        <svg viewBox="0 0 120 120"><defs><path id="badgeCircle" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0"/></defs>
+          <text><textPath href="#badgeCircle">ROZVOZ PO JAROMĚŘI · POCTIVÝ KEBAB · </textPath></text></svg>
+        <span class="hero-badge-core"><b>30</b>MIN</span>
+      </div>
+      <img class="hero-mascot-img" src="images/mascot-removebg-preview.webp" alt="Dudkův kebab maskot" width="408" height="612" fetchpriority="high" decoding="async" />
     </div>
   </div>
 </section>
  
 <!-- ============== TICKER ============== -->
-<div class="ticker" aria-hidden="true">
-  <div class="ticker-track">
+<div class="ribbons" aria-hidden="true">
+<div class="ticker ticker--back"><div class="ticker-track ticker-track--rev">
     <span>POCTIVÝ KEBAB <span class="dot">★</span> JAROMĚŘ <span class="dot">★</span> ROZVOZ DO 30 MIN <span class="dot">★</span> VLASTNÍ OMÁČKY <span class="dot">★</span> ČERSTVÁ TORTILLA <span class="dot">★</span> XXL BAGETY <span class="dot">★</span></span>
     <span>POCTIVÝ KEBAB <span class="dot">★</span> JAROMĚŘ <span class="dot">★</span> ROZVOZ DO 30 MIN <span class="dot">★</span> VLASTNÍ OMÁČKY <span class="dot">★</span> ČERSTVÁ TORTILLA <span class="dot">★</span> XXL BAGETY <span class="dot">★</span></span>
-  </div>
+  </div></div>
+<div class="ticker ticker--front"><div class="ticker-track">
+    <span>POCTIVÝ KEBAB <span class="dot">★</span> JAROMĚŘ <span class="dot">★</span> ROZVOZ DO 30 MIN <span class="dot">★</span> VLASTNÍ OMÁČKY <span class="dot">★</span> ČERSTVÁ TORTILLA <span class="dot">★</span> XXL BAGETY <span class="dot">★</span></span>
+    <span>POCTIVÝ KEBAB <span class="dot">★</span> JAROMĚŘ <span class="dot">★</span> ROZVOZ DO 30 MIN <span class="dot">★</span> VLASTNÍ OMÁČKY <span class="dot">★</span> ČERSTVÁ TORTILLA <span class="dot">★</span> XXL BAGETY <span class="dot">★</span></span>
+  </div></div>
 </div>
  
 <!-- ============== MENU SHOWCASE ============== -->
@@ -1409,6 +1506,116 @@
   window.addEventListener('scroll', () => {
     if (!ticking) { requestAnimationFrame(onScroll); ticking = true; }
   }, { passive: true });
+
+  /* ===== DESIGN UPGRADE ===== */
+  (function () {
+    const rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    requestAnimationFrame(() => document.documentElement.classList.add('is-loaded'));
+
+    // stagger reveal uvnitř mřížek
+    document.querySelectorAll('.menu-grid, .why-grid, .gallery').forEach(g =>
+      [...g.children].forEach((c, i) => c.style.setProperty('--d', (i % 4) * 0.08 + 's')));
+
+    // scroll progress
+    const bar = document.createElement('div'); bar.className = 'scroll-progress'; navEl.appendChild(bar);
+
+    // pásky: pohyb řízený časem + rychlostí scrollu
+    const tracks = [...document.querySelectorAll('.ribbons .ticker-track')];
+    const ribbons = document.querySelector('.ribbons');
+    let ribbonsVisible = true, boost = 0, offset = 0, lastSY = scrollY, lastT = performance.now();
+    if (ribbons) new IntersectionObserver(e => { ribbonsVisible = e[0].isIntersecting; }).observe(ribbons);
+    function frame(t) {
+      const dt = Math.min(64, t - lastT); lastT = t;
+      const sy = scrollY, dy = sy - lastSY; lastSY = sy;
+      const max = document.documentElement.scrollHeight - innerHeight;
+      bar.style.transform = 'scaleX(' + (max > 0 ? sy / max : 0) + ')';
+      if (!rm && ribbonsVisible && tracks.length) {
+        boost += (Math.min(Math.abs(dy), 80) * 0.06 - boost) * 0.08;
+        offset += dt * (0.045 + boost * 0.05);
+        tracks.forEach((tr, i) => {
+          const w = tr.scrollWidth / 2 || 1;
+          const x = -(offset % w);
+          tr.style.transform = 'translate3d(' + (i === 0 ? -w - x : x) + 'px,0,0)';
+        });
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+
+    // count-up statistik
+    const cio = new IntersectionObserver(es => es.forEach(e => {
+      if (!e.isIntersecting) return; cio.unobserve(e.target);
+      const el = e.target, end = parseFloat(el.dataset.count), dec = +el.dataset.dec || 0;
+      if (rm) return; const t0 = performance.now(), dur = 1400;
+      (function step(t) {
+        const p = Math.min(1, (t - t0) / dur), v = end * (1 - Math.pow(1 - p, 4));
+        el.textContent = v.toFixed(dec).replace('.', ',');
+        if (p < 1) requestAnimationFrame(step);
+      })(t0);
+    }), { threshold: .6 });
+    document.querySelectorAll('[data-count]').forEach(el => cio.observe(el));
+
+    if (!fine || rm) { embers(); return; }
+
+    // maskot parallax
+    const hero = document.querySelector('.hero'), mascot = document.querySelector('.hero-mascot-img');
+    if (hero && mascot) hero.addEventListener('pointermove', e => {
+      const r = hero.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      mascot.style.setProperty('--mx', (x * 22).toFixed(1) + 'px');
+      mascot.style.setProperty('--my', (y * 14).toFixed(1) + 'px');
+      mascot.style.setProperty('--mr', (x * 4).toFixed(2) + 'deg');
+    }, { passive: true });
+
+    // 3D tilt karet
+    document.querySelectorAll('.menu-card').forEach(card => {
+      card.addEventListener('pointermove', e => {
+        const r = card.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+        card.style.setProperty('--ry', ((x - .5) * 8).toFixed(2) + 'deg');
+        card.style.setProperty('--rx', ((.5 - y) * 8).toFixed(2) + 'deg');
+        card.style.setProperty('--gx', (x * 100).toFixed(1) + '%');
+        card.style.setProperty('--gy', (y * 100).toFixed(1) + '%');
+      }, { passive: true });
+      card.addEventListener('pointerleave', () => { card.style.setProperty('--rx', '0deg'); card.style.setProperty('--ry', '0deg'); });
+    });
+
+    // magnetická hlavní tlačítka
+    document.querySelectorAll('.btn--lg').forEach(b => {
+      b.addEventListener('pointermove', e => {
+        const r = b.getBoundingClientRect();
+        b.style.setProperty('--bx', ((e.clientX - r.left - r.width / 2) * .18).toFixed(1) + 'px');
+        b.style.setProperty('--by', ((e.clientY - r.top - r.height / 2) * .28).toFixed(1) + 'px');
+      }, { passive: true });
+      b.addEventListener('pointerleave', () => { b.style.setProperty('--bx', '0px'); b.style.setProperty('--by', '0px'); });
+    });
+
+    embers();
+
+    // jiskry od grilu za maskotem
+    function embers() {
+      const cv = document.querySelector('.hero-embers'); if (!cv || rm) return;
+      const ctx = cv.getContext('2d'); let W, H, dpr, parts = [], on = true, raf;
+      function size() { dpr = Math.min(devicePixelRatio || 1, 2); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+      function spawn() { return { x: W * (.25 + Math.random() * .5), y: H * (.75 + Math.random() * .2), vx: (Math.random() - .5) * .35, vy: -(.35 + Math.random() * .9), r: .6 + Math.random() * 1.8, life: 0, max: 120 + Math.random() * 160, hue: 18 + Math.random() * 30 }; }
+      size(); addEventListener('resize', size, { passive: true });
+      const N = innerWidth < 700 ? 22 : 42;
+      for (let i = 0; i < N; i++) { const p = spawn(); p.life = Math.random() * p.max; parts.push(p); }
+      function tick() {
+        ctx.clearRect(0, 0, W, H); ctx.globalCompositeOperation = 'lighter';
+        for (const p of parts) {
+          p.life++; p.x += p.vx + Math.sin((p.life + p.r * 40) / 22) * .25; p.y += p.vy;
+          const k = p.life / p.max, a = k < .15 ? k / .15 : 1 - (k - .15) / .85;
+          ctx.fillStyle = 'hsla(' + p.hue + ',100%,' + (55 + (1 - k) * 15) + '%,' + (a * .85).toFixed(3) + ')';
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r * (1 - k * .5), 0, 6.283); ctx.fill();
+          if (p.life >= p.max) Object.assign(p, spawn());
+        }
+        raf = on ? requestAnimationFrame(tick) : 0;
+      }
+      new IntersectionObserver(e => { on = e[0].isIntersecting; if (on && !raf) raf = requestAnimationFrame(tick); }).observe(cv);
+      document.addEventListener('visibilitychange', () => { on = !document.hidden; if (on && !raf) raf = requestAnimationFrame(tick); });
+    }
+  })();
 </script>
  
 </body>
